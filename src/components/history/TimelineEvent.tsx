@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import {
-  Plus, Pencil, Trash2, CheckCircle2, LogIn, LogOut, Folder,
+  Plus, Pencil, Trash2, CheckCircle2, LogIn, LogOut,
 } from 'lucide-react';
 import type { HistoryEvent, HistoryEventType } from '../../types/task';
 import { formatRelativeTime } from '../../utils/formatDate';

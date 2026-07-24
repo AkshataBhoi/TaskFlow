@@ -16,10 +16,10 @@ export default function Dashboard() {
   const [editingTask, setEditingTask]     = useState<Task | null>(null);
 
   // Fetch ALL tasks (for stats)
-  const { tasks: allTasks, loading: allLoading } = useTasks({}, 1, 999);
+  const { tasks: allTasks, loading: allLoading } = useTasks({}, 1);
 
   // Fetch filtered tasks (for table preview — limit 6)
-  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, deleteTask } = useTasks(filters, 1, 6);
+  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, deleteTask } = useTasks(filters, 1);
 
   const handleSave = async (payload: CreateTaskPayload) => {
     if (editingTask) {

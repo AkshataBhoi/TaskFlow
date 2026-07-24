@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { CURRENT_USER } from '../data/mockData';
+// import { CURRENT_USER } from '../data/mockData';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -30,7 +30,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ collapsed, mobileOpen, onToggle, onMobileClose }: SidebarProps) {
-  const initials = CURRENT_USER.name.split(' ').map((n) => n[0]).join('');
+  // const initials = CURRENT_USER.name.split(' ').map((n) => n[0]).join('');
 
   return (
     <>
