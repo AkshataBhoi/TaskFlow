@@ -1,45 +1,40 @@
+import api from './api';
 import type {
   Category,
   CreateCategoryPayload,
   UpdateCategoryPayload,
   ApiResponse,
 } from '../types/task';
-import { MOCK_CATEGORIES } from '../data/mockData';
-
-const delay = (ms = 400) => new Promise<void>((res) => setTimeout(res, ms));
-
-let categories: Category[] = [...MOCK_CATEGORIES];
 
 export const categoryService = {
   async getAll(): Promise<ApiResponse<Category[]>> {
-    await delay();
-    return { data: [...categories], message: 'Success', success: true };
+    const res = await api.get('/categories');
+    
+    // Map backend `_id` to `id` for frontend consistency
+    const data = res.data.data.map((c: any) => ({
+      ...c,
+      id: c._id,
+      taskCount: c.taskCount || 0, // In a real robust app, backend aggregates this. We'll default to 0 if not present.
+      completedCount: c.completedCount || 0
+    }));
+
+    return { data, message: res.data.message, success: true };
   },
 
   async create(payload: CreateCategoryPayload): Promise<ApiResponse<Category>> {
-    await delay();
-    const newCategory: Category = {
-      id: `c${Date.now()}`,
-      ...payload,
-      taskCount: 0,
-      completedCount: 0,
-      createdAt: new Date().toISOString(),
-    };
-    categories = [newCategory, ...categories];
-    return { data: newCategory, message: 'Category created', success: true };
+    const res = await api.post('/categories', payload);
+    const data = { ...res.data.data, id: res.data.data._id, taskCount: 0, completedCount: 0 };
+    return { data, message: res.data.message, success: true };
   },
 
   async update(id: string, payload: UpdateCategoryPayload): Promise<ApiResponse<Category>> {
-    await delay();
-    const index = categories.findIndex((c) => c.id === id);
-    if (index === -1) throw new Error('Category not found');
-    categories[index] = { ...categories[index], ...payload };
-    return { data: categories[index], message: 'Category updated', success: true };
+    const res = await api.put(`/categories/${id}`, payload);
+    const data = { ...res.data.data, id: res.data.data._id };
+    return { data, message: res.data.message, success: true };
   },
 
   async remove(id: string): Promise<ApiResponse<null>> {
-    await delay();
-    categories = categories.filter((c) => c.id !== id);
-    return { data: null, message: 'Category deleted', success: true };
+    const res = await api.delete(`/categories/${id}`);
+    return { data: null, message: res.data.message, success: true };
   },
 };

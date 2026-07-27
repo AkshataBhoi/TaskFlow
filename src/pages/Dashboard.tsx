@@ -8,6 +8,7 @@ import { TaskTable } from '../components/task/TaskTable';
 import { TaskModal } from '../components/task/TaskModal';
 import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
+import { useDashboard } from '../hooks/useDashboard';
 import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
 
 export default function Dashboard() {
@@ -15,11 +16,11 @@ export default function Dashboard() {
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask]     = useState<Task | null>(null);
 
-  // Fetch ALL tasks (for stats)
-  const { tasks: allTasks, loading: allLoading } = useTasks({}, 1);
+  // Fetch dashboard stats
+  const { stats, loading: statsLoading, refresh: refreshDashboard } = useDashboard();
 
   // Fetch filtered tasks (for table preview — limit 6)
-  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, deleteTask } = useTasks(filters, 1);
+  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, deleteTask } = useTasks(filters, 10);
 
   const handleSave = async (payload: CreateTaskPayload) => {
     if (editingTask) {
@@ -29,6 +30,7 @@ export default function Dashboard() {
     }
     setEditingTask(null);
     setTaskModalOpen(false);
+    refreshDashboard();
   };
 
   const handleEdit = (task: Task) => {
@@ -36,12 +38,17 @@ export default function Dashboard() {
     setTaskModalOpen(true);
   };
 
+  const handleDelete = async (id: string) => {
+    await deleteTask(id);
+    refreshDashboard();
+  };
+
   return (
     <div className="space-y-7">
       <DashboardHeader />
 
       {/* Stats */}
-      <StatsGrid tasks={allTasks} loading={allLoading} />
+      <StatsGrid stats={stats} loading={statsLoading} />
 
       {/* Filter bar */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -60,7 +67,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-slate-900">Recent Tasks</h3>
-            <p className="text-sm text-slate-500 mt-0.5">Your latest 6 tasks based on filters</p>
+            <p className="text-sm text-slate-500 mt-0.5">Your latest tasks based on filters</p>
           </div>
           <Link
             to="/my-tasks"
@@ -74,7 +81,7 @@ export default function Dashboard() {
           tasks={filteredTasks}
           loading={tableLoading}
           onEdit={handleEdit}
-          onDelete={deleteTask}
+          onDelete={handleDelete}
           onAddTask={() => setTaskModalOpen(true)}
           limit={6}
         />

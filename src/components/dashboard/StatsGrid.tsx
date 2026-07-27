@@ -1,14 +1,14 @@
 import { CheckCircle2, CircleDashed, ListTodo, Timer } from 'lucide-react';
 import { StatsCard } from './StatsCard';
-import type { Task } from '../../types/task';
+import type { DashboardStats } from '../../types/task';
 import { StatsCardSkeleton } from '../ui/LoadingSkeleton';
 
 interface StatsGridProps {
-  tasks: Task[];
+  stats: DashboardStats | null;
   loading?: boolean;
 }
 
-export function StatsGrid({ tasks, loading }: StatsGridProps) {
+export function StatsGrid({ stats, loading }: StatsGridProps) {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -17,21 +17,44 @@ export function StatsGrid({ tasks, loading }: StatsGridProps) {
     );
   }
 
-  const total      = tasks.length;
-  const pending    = tasks.filter((t) => t.status === 'Pending').length;
-  const inProgress = tasks.filter((t) => t.status === 'In Progress').length;
-  const completed  = tasks.filter((t) => t.status === 'Completed').length;
-
-  const stats = [
-    { icon: ListTodo,     title: 'Total Tasks',  value: total,      iconColor: 'text-blue-600',    bgColor: 'bg-blue-50',    trend: 12  },
-    { icon: CircleDashed, title: 'Pending',       value: pending,    iconColor: 'text-slate-600',   bgColor: 'bg-slate-100',  trend: -5  },
-    { icon: Timer,        title: 'In Progress',   value: inProgress, iconColor: 'text-amber-600',   bgColor: 'bg-amber-50',   trend: 8   },
-    { icon: CheckCircle2, title: 'Completed',     value: completed,  iconColor: 'text-emerald-600', bgColor: 'bg-emerald-50', trend: 18  },
+  const cards = [
+    {
+      icon: ListTodo,
+      title: 'Total Tasks',
+      value: stats?.total ?? 0,
+      iconColor: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      trend: 12,
+    },
+    {
+      icon: CircleDashed,
+      title: 'Pending',
+      value: stats?.pending ?? 0,
+      iconColor: 'text-slate-600',
+      bgColor: 'bg-slate-100',
+      trend: -5,
+    },
+    {
+      icon: Timer,
+      title: 'High Priority',
+      value: stats?.highPriority ?? 0,
+      iconColor: 'text-amber-600',
+      bgColor: 'bg-amber-50',
+      trend: 8,
+    },
+    {
+      icon: CheckCircle2,
+      title: 'Completed',
+      value: stats?.completed ?? 0,
+      iconColor: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      trend: 18,
+    },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-      {stats.map((item, i) => (
+      {cards.map((item, i) => (
         <StatsCard key={item.title} {...item} index={i} />
       ))}
     </div>

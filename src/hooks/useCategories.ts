@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Category, CreateCategoryPayload, UpdateCategoryPayload } from '../types/task';
 import { categoryService } from '../services/categoryService';
+import toast from 'react-hot-toast';
 
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -13,8 +14,9 @@ export function useCategories() {
     try {
       const res = await categoryService.getAll();
       setCategories(res.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load categories');
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Failed to load categories');
+      toast.error('Failed to load categories');
     } finally {
       setLoading(false);
     }
@@ -23,18 +25,33 @@ export function useCategories() {
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
   const createCategory = async (payload: CreateCategoryPayload) => {
-    await categoryService.create(payload);
-    fetchCategories();
+    try {
+      await categoryService.create(payload);
+      toast.success('Category created successfully');
+      fetchCategories();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to create category');
+    }
   };
 
   const updateCategory = async (id: string, payload: UpdateCategoryPayload) => {
-    await categoryService.update(id, payload);
-    fetchCategories();
+    try {
+      await categoryService.update(id, payload);
+      toast.success('Category updated successfully');
+      fetchCategories();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update category');
+    }
   };
 
   const deleteCategory = async (id: string) => {
-    await categoryService.remove(id);
-    fetchCategories();
+    try {
+      await categoryService.remove(id);
+      toast.success('Category deleted successfully');
+      fetchCategories();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to delete category');
+    }
   };
 
   return { categories, loading, error, refresh: fetchCategories, createCategory, updateCategory, deleteCategory };

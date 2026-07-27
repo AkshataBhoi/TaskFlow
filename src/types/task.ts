@@ -6,12 +6,13 @@ export type Status   = 'Pending' | 'In Progress' | 'Completed';
 // ─── Core Domain Types ───────────────────────────────────────────────────────
 
 export interface User {
-  id: string;
-  name: string;
+  id?: string;        // mapped from _id on frontend
+  _id?: string;       // raw from backend
+  name?: string;      // legacy / fallback
+  fullName: string;   // from backend
   email: string;
-  avatar?: string;
-  role: 'Admin' | 'Member' | 'Viewer';
-  createdAt: string;
+  role: string;
+  createdAt?: string;
 }
 
 export interface Category {
@@ -85,6 +86,13 @@ export interface PaginatedResponse<T> {
   page: number;
   pageSize: number;
   totalPages: number;
+}
+
+export interface DashboardStats {
+  total: number;
+  completed: number;
+  pending: number;
+  highPriority: number;
 }
 
 // ─── Filter / Query Types ─────────────────────────────────────────────────────

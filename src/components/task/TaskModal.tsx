@@ -4,8 +4,8 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
-import type { Task, CreateTaskPayload, Priority, Status } from '../../types/task';
-import { MOCK_CATEGORIES } from '../../data/mockData';
+import type { Task, CreateTaskPayload, Priority, Status, Category } from '../../types/task';
+import { categoryService } from '../../services/categoryService';
 
 interface TaskModalProps {
   open: boolean;
@@ -53,11 +53,25 @@ const EMPTY_FORM: FormState = {
 };
 
 export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
-  const [form, setForm]     = useState<FormState>(EMPTY_FORM);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [saving, setSaving] = useState(false);
+  const [form, setForm]           = useState<FormState>(EMPTY_FORM);
+  const [errors, setErrors]       = useState<FormErrors>({});
+  const [saving, setSaving]       = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const isEdit = !!task;
+
+  // Load categories from backend
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await categoryService.getAll();
+        setCategories(res.data);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
+    };
+    loadCategories();
+  }, []);
 
   // Seed form when task changes
   useEffect(() => {
@@ -68,7 +82,7 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
         category:    task.category,
         priority:    task.priority,
         status:      task.status,
-        dueDate:     task.dueDate,
+        dueDate:     task.dueDate ? task.dueDate.slice(0, 10) : '',
         assignedTo:  task.assignedTo ?? '',
       });
     } else {
@@ -77,7 +91,8 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
     setErrors({});
   }, [task, open]);
 
-  const categoryOptions = MOCK_CATEGORIES.map((c) => ({ value: c.id, label: c.name }));
+  // category options use MongoDB _id as value
+  const categoryOptions = categories.map((c) => ({ value: c.id, label: c.name }));
 
   const set = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -96,20 +111,28 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
   };
 
   const handleSubmit = async () => {
-    if (!validate()) return;
+    console.log('TaskModal: handleSubmit called');
+    if (!validate()) {
+      console.warn('TaskModal: validation failed', errors);
+      return;
+    }
     setSaving(true);
     try {
       const payload: CreateTaskPayload = {
         title:       form.title.trim(),
         description: form.description.trim() || undefined,
-        category:    form.category,
+        category:    form.category,          // MongoDB ObjectId from categoryService
         priority:    form.priority as Priority,
         status:      form.status as Status,
         dueDate:     form.dueDate,
         assignedTo:  form.assignedTo || undefined,
       };
+      console.log('TaskModal: payload prepared', payload);
       await onSave(payload);
+      console.log('TaskModal: onSave resolved');
       onClose();
+    } catch (err) {
+      console.error('TaskModal: onSave error', err);
     } finally {
       setSaving(false);
     }

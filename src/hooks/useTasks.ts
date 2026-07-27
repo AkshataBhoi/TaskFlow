@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Task, CreateTaskPayload, UpdateTaskPayload, TaskFilters } from '../types/task';
 import { taskService } from '../services/taskService';
+import toast from 'react-hot-toast';
 
 export function useTasks(initialFilters: TaskFilters = {}, pageSize = 10) {
   const [tasks, setTasks]       = useState<Task[]>([]);
@@ -19,8 +20,9 @@ export function useTasks(initialFilters: TaskFilters = {}, pageSize = 10) {
       setTasks(res.data);
       setTotal(res.total);
       setTotalPages(res.totalPages);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load tasks');
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Failed to load tasks');
+      toast.error('Failed to load tasks');
     } finally {
       setLoading(false);
     }
@@ -32,23 +34,43 @@ export function useTasks(initialFilters: TaskFilters = {}, pageSize = 10) {
   useEffect(() => { setPage(1); }, [filters]);
 
   const createTask = async (payload: CreateTaskPayload) => {
-    await taskService.create(payload);
-    fetchTasks();
+    try {
+      await taskService.create(payload);
+      toast.success('Task created successfully');
+      fetchTasks();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to create task');
+    }
   };
 
   const updateTask = async (id: string, payload: UpdateTaskPayload) => {
-    await taskService.update(id, payload);
-    fetchTasks();
+    try {
+      await taskService.update(id, payload);
+      toast.success('Task updated successfully');
+      fetchTasks();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update task');
+    }
   };
 
   const deleteTask = async (id: string) => {
-    await taskService.remove(id);
-    fetchTasks();
+    try {
+      await taskService.remove(id);
+      toast.success('Task deleted successfully');
+      fetchTasks();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to delete task');
+    }
   };
 
   const bulkDeleteTasks = async (ids: string[]) => {
-    await taskService.bulkRemove(ids);
-    fetchTasks();
+    try {
+      await taskService.bulkRemove(ids);
+      toast.success(`${ids.length} tasks deleted`);
+      fetchTasks();
+    } catch (err: any) {
+      toast.error('Failed to delete some tasks');
+    }
   };
 
   return {
