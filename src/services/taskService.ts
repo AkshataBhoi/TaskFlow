@@ -40,7 +40,7 @@ export const taskService = {
 
     // To minimize frontend changes, let's process the flat array returned from backend:
     let filtered: Task[] = res.data.data || [];
-    console.log(filtered[0]);
+    console.log(filtered);
 
     // Fallback frontend filtering if the backend doesn't implement it yet
     if (filters.search) {

@@ -37,11 +37,11 @@ export default function Categories() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white border border-slate-200 rounded-2xl shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Categories</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Categories</h1>
           <p className="text-slate-500 text-sm mt-1">
             {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'} in your workspace
           </p>
@@ -49,6 +49,7 @@ export default function Categories() {
         <Button
           icon={<Plus size={16} />}
           onClick={() => { setEditTarget(null); setModalOpen(true); }}
+          className="shadow-sm rounded-xl px-5"
         >
           New Category
         </Button>
@@ -56,22 +57,22 @@ export default function Categories() {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       ) : categories.length === 0 ? (
         <EmptyState
-          icon={<Tags size={28} />}
+          icon={<Tags size={36} className="text-blue-500" />}
           title="No categories yet"
-          description="Create your first category to start organizing tasks."
+          description="Create your first category to start organizing your tasks efficiently."
           action={
-            <Button icon={<Plus size={14} />} size="sm" onClick={() => setModalOpen(true)}>
+            <Button icon={<Plus size={16} />} size="md" onClick={() => setModalOpen(true)} className="mt-2 rounded-xl">
               Create Category
             </Button>
           }
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {categories.map((cat, i) => (
             <CategoryCard
               key={cat.id}

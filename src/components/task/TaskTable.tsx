@@ -261,7 +261,7 @@ export function TaskTable({
                     <span
                       className={cn(
                         'text-sm',
-                        task.status !== 'Completed' && isOverdue(task.dueDate)
+                        task.status !== 'completed' && isOverdue(task.dueDate)
                           ? 'text-red-600 font-medium'
                           : 'text-slate-600'
                       )}

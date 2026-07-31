@@ -29,7 +29,7 @@ const STATUS_OPTIONS = [
 interface FormState {
   title: string;
   description: string;
-  categoryId: string;
+  categoryInput: string;
   priority: Priority;
   status: Status;
   dueDate: string;
@@ -38,14 +38,14 @@ interface FormState {
 
 interface FormErrors {
   title?: string;
-  categoryId?: string;
+  categoryInput?: string;
   dueDate?: string;
 }
 
 const EMPTY_FORM: FormState = {
   title: '',
   description: '',
-  categoryId: '',
+  categoryInput: '',
   priority: 'medium',
   status: 'pending',
   dueDate: '',
@@ -79,7 +79,7 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
       setForm({
         title:       task.title,
         description: task.description ?? '',
-        categoryId:  task.categoryId,
+        categoryInput: categories.find((c) => c.id === task.categoryId || (c as any)._id === task.categoryId)?.name || '',
         priority:    task.priority,
         status:      task.status,
         dueDate:     task.dueDate ? task.dueDate.slice(0, 10) : '',
@@ -89,10 +89,7 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
       setForm(EMPTY_FORM);
     }
     setErrors({});
-  }, [task, open]);
-
-  // category options — use MongoDB _id as value, fallback to _id if id not set
-  const categoryOptions = categories.map((c) => ({ value: c.id || (c as any)._id, label: c.name }));
+  }, [task, open, categories]);
 
   const set = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -104,32 +101,47 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     if (!form.title.trim())    newErrors.title      = 'Task title is required';
-    if (!form.categoryId)      newErrors.categoryId = 'Please select a category';
+    if (!form.categoryInput.trim()) newErrors.categoryInput = 'Please select or create a category';
     if (!form.dueDate)         newErrors.dueDate    = 'Please select a due date';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
-    console.log('TaskModal: handleSubmit called');
-    if (!validate()) {
-      console.warn('TaskModal: validation failed', errors);
-      return;
-    }
+    if (!validate()) return;
     setSaving(true);
     try {
+      let finalCategoryId = '';
+      const existingCategory = categories.find(
+        (c) => c.name.toLowerCase() === form.categoryInput.trim().toLowerCase()
+      );
+
+      if (existingCategory) {
+        finalCategoryId = existingCategory.id || (existingCategory as any)._id;
+      } else {
+        // Create new category on the fly
+        const res = await categoryService.create({
+          name: form.categoryInput.trim(),
+          color: 'blue',
+          icon: 'Folder',
+        });
+        finalCategoryId = res.data.id || (res.data as any)._id;
+        
+        // Refresh categories list silently
+        categoryService.getAll().then((r) => setCategories(r.data)).catch(console.error);
+      }
+
       const payload: CreateTaskPayload = {
         title:       form.title.trim(),
         description: form.description.trim() || undefined,
-        categoryId:  form.categoryId,       // MongoDB ObjectId from categoryService
+        categoryId:  finalCategoryId,
         priority:    form.priority as Priority,
         status:      form.status as Status,
         dueDate:     form.dueDate,
         assignedTo:  form.assignedTo || undefined,
       };
-      console.log('TaskModal: payload prepared', payload);
+      
       await onSave(payload);
-      console.log('TaskModal: onSave resolved');
       onClose();
     } catch (err) {
       console.error('TaskModal: onSave error', err);
@@ -178,15 +190,26 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
 
         {/* Row: Category + Priority */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Select
-            label="Category"
-            required
-            placeholder="Select category"
-            options={categoryOptions}
-            value={form.categoryId}
-            onChange={set('categoryId')}
-            error={errors.categoryId}
-          />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <input
+              list="categories-list"
+              className={`w-full px-3 py-2.5 bg-white border rounded-xl shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors ${
+                errors.categoryInput ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-200'
+              }`}
+              placeholder="Select or type to create..."
+              value={form.categoryInput}
+              onChange={set('categoryInput')}
+            />
+            <datalist id="categories-list">
+              {categories.map((c) => (
+                <option key={c.id || (c as any)._id} value={c.name} />
+              ))}
+            </datalist>
+            {errors.categoryInput && <p className="text-xs text-red-500 mt-1">{errors.categoryInput}</p>}
+          </div>
           <Select
             label="Priority"
             options={PRIORITY_OPTIONS}
