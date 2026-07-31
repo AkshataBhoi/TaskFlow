@@ -2,26 +2,26 @@ import { Select } from '../ui/Select';
 import { SearchInput } from '../ui/SearchInput';
 import { Button } from '../ui/Button';
 import { X } from 'lucide-react';
-import type { TaskFilters, Priority, Status } from '../../types/task';
-import { MOCK_CATEGORIES } from '../../data/mockData';
+import type { TaskFilters, Priority, Status, Category } from '../../types/task';
 
 interface FilterBarProps {
   filters: TaskFilters;
   onChange: (filters: TaskFilters) => void;
+  categories?: Category[]; // real categories from backend
 }
 
 const STATUS_OPTIONS = [
   { value: '',            label: 'All Statuses' },
-  { value: 'Pending',     label: 'Pending' },
-  { value: 'In Progress', label: 'In Progress' },
-  { value: 'Completed',   label: 'Completed' },
+  { value: 'pending',     label: 'Pending' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'completed',   label: 'Completed' },
 ];
 
 const PRIORITY_OPTIONS = [
   { value: '',       label: 'All Priorities' },
-  { value: 'High',   label: 'High' },
-  { value: 'Medium', label: 'Medium' },
-  { value: 'Low',    label: 'Low' },
+  { value: 'high',   label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low',    label: 'Low' },
 ];
 
 const SORT_OPTIONS = [
@@ -32,10 +32,10 @@ const SORT_OPTIONS = [
   { value: 'status',    label: 'Status' },
 ];
 
-export function FilterBar({ filters, onChange }: FilterBarProps) {
+export function FilterBar({ filters, onChange, categories = [] }: FilterBarProps) {
   const categoryOptions = [
     { value: '', label: 'All Categories' },
-    ...MOCK_CATEGORIES.map((c) => ({ value: c.id, label: c.name })),
+    ...categories.map((c) => ({ value: c.id || (c as any)._id, label: c.name })),
   ];
 
   const hasActiveFilters = !!(filters.search || filters.status || filters.category || filters.priority);

@@ -1,15 +1,15 @@
 // ─── Enums / Union Types ────────────────────────────────────────────────────
 
-export type Priority = 'Low' | 'Medium' | 'High';
-export type Status   = 'Pending' | 'In Progress' | 'Completed';
+export type Priority = 'low' | 'medium' | 'high';
+export type Status   = 'pending' | 'in-progress' | 'completed';
 
 // ─── Core Domain Types ───────────────────────────────────────────────────────
 
 export interface User {
   id?: string;        // mapped from _id on frontend
   _id?: string;       // raw from backend
-  name?: string;      // legacy / fallback
-  fullName: string;   // from backend
+  fullName: string;   // from backend (was incorrectly named "User")
+  name?: string;      // alias kept for legacy components during migration
   email: string;
   role: string;
   createdAt?: string;
@@ -29,7 +29,7 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  category: string;        // category id
+  categoryId: string;        // category id
   categoryName: string;    // denormalized for display
   priority: Priority;
   status: Status;
@@ -111,7 +111,7 @@ export interface TaskFilters {
 export interface CreateTaskPayload {
   title: string;
   description?: string;
-  category: string;
+  categoryId: string;      // MongoDB ObjectId of the category (backend field name)
   priority: Priority;
   status: Status;
   dueDate: string;

@@ -83,7 +83,7 @@ export function useTasks(initialFilters: TaskFilters = {}, pageSize = 10) {
     setFilters,
     loading,
     error,
-    refresh: fetchTasks,
+    refreshTasks: fetchTasks,
     createTask,
     updateTask,
     deleteTask,

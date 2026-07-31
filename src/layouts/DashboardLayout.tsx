@@ -6,9 +6,9 @@ import { TaskModal } from '../components/task/TaskModal';
 
 export default function DashboardLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen]             = useState(false);
-  const [taskModalOpen, setTaskModalOpen]        = useState(false);
-  const [isRefreshing, setIsRefreshing]          = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -34,7 +34,13 @@ export default function DashboardLayout() {
 
         <main className="flex-1 overflow-y-auto">
           <div className="max-w-[1400px] mx-auto px-6 md:px-8 py-8 w-full">
-            <Outlet context={{ openNewTaskModal: () => setTaskModalOpen(true) }} />
+            <Outlet
+              context={{
+                openNewTaskModal: () => setTaskModalOpen(true),
+                onRefresh: handleRefresh,
+                isRefreshing,
+              }}
+            />
           </div>
         </main>
       </div>

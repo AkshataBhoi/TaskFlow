@@ -1,7 +1,13 @@
+import { useAuth } from '../../context/AuthContext';
 import { getGreeting } from '../../utils/formatDate';
-import { CURRENT_USER } from '../../data/mockData';
 
 export function DashboardHeader() {
+  const { user } = useAuth();
+
+  // Support both fullName (backend field) and name (legacy mock field)
+  const displayName = user?.fullName || user?.name || 'there';
+  const firstName   = displayName.split(' ')[0];
+
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year:    'numeric',
@@ -13,7 +19,7 @@ export function DashboardHeader() {
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div>
         <h2 className="text-2xl font-bold text-slate-900">
-          {getGreeting()}, {CURRENT_USER.name.split(' ')[0]} 👋
+          {getGreeting()}, {firstName} 👋
         </h2>
         <p className="text-slate-500 text-sm mt-1">{today}</p>
       </div>

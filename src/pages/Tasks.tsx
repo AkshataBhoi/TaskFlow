@@ -6,6 +6,7 @@ import { TaskModal } from '../components/task/TaskModal';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
+import { useCategories } from '../hooks/useCategories';
 import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
 
 export default function Tasks() {
@@ -18,6 +19,8 @@ export default function Tasks() {
     loading, createTask, updateTask, deleteTask, bulkDeleteTasks,
     setFilters: applyFilters,
   } = useTasks(filters, 8);
+
+  const { categories } = useCategories();
 
   const handleFilterChange = (f: TaskFilters) => {
     setFilters(f);
@@ -59,7 +62,7 @@ export default function Tasks() {
       </div>
 
       {/* Filter bar */}
-      <FilterBar filters={filters} onChange={handleFilterChange} />
+      <FilterBar filters={filters} onChange={handleFilterChange} categories={categories} />
 
       {/* Task table */}
       <TaskTable

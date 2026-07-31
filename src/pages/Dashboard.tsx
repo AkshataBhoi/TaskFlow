@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Plus } from 'lucide-react';
+import { ArrowRight, Plus, RefreshCw } from 'lucide-react';
 import { DashboardHeader } from '../components/dashboard/DashboardHeader';
 import { StatsGrid } from '../components/dashboard/StatsGrid';
 import { FilterBar } from '../components/dashboard/FilterBar';
@@ -9,18 +9,40 @@ import { TaskModal } from '../components/task/TaskModal';
 import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
 import { useDashboard } from '../hooks/useDashboard';
+import { useCategories } from '../hooks/useCategories';
 import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
+import { useOutletContext } from "react-router-dom";
+
+type DashboardContext = {
+  openNewTaskModal: () => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
+};
+
 
 export default function Dashboard() {
   const [filters, setFilters] = useState<TaskFilters>({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [taskModalOpen, setTaskModalOpen] = useState(false);
-  const [editingTask, setEditingTask]     = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isRefresh, setIsRefreshing] = useState(false);
+
+
+  const {
+    onRefresh,
+    isRefreshing,
+  } = useOutletContext<DashboardContext>();
 
   // Fetch dashboard stats
   const { stats, loading: statsLoading, refresh: refreshDashboard } = useDashboard();
 
+  // Fetch real categories for the filter dropdown
+  const { categories } = useCategories();
+
   // Fetch filtered tasks (for table preview — limit 6)
-  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, deleteTask } = useTasks(filters, 10);
+  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, refreshTasks, deleteTask } = useTasks(filters, 10);
+  const {
+    refreshCategories,
+  } = useCategories();
 
   const handleSave = async (payload: CreateTaskPayload) => {
     if (editingTask) {
@@ -43,6 +65,18 @@ export default function Dashboard() {
     refreshDashboard();
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+
+    await Promise.all([
+      refreshDashboard(),
+      refreshTasks(),
+      refreshCategories(),
+    ]);
+
+    setIsRefreshing(false);
+  };
+
   return (
     <div className="space-y-7">
       <DashboardHeader />
@@ -52,14 +86,24 @@ export default function Dashboard() {
 
       {/* Filter bar */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <FilterBar filters={filters} onChange={setFilters} />
-        <Button
-          icon={<Plus size={16} />}
-          onClick={() => { setEditingTask(null); setTaskModalOpen(true); }}
-          className="shrink-0"
-        >
-          New Task
-        </Button>
+        <FilterBar filters={filters} onChange={setFilters} categories={categories} />
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <button
+            onClick={handleRefresh}
+            className="p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all duration-200"
+            title="Refresh"
+          >
+            <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
+          </button>
+          <Button
+            icon={<Plus size={16} />}
+            onClick={() => { setEditingTask(null); setTaskModalOpen(true); }}
+            className="shrink-0"
+          >
+            New Task
+          </Button>
+        </div>
+
       </div>
 
       {/* Recent tasks table */}

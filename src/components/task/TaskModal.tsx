@@ -15,21 +15,21 @@ interface TaskModalProps {
 }
 
 const PRIORITY_OPTIONS = [
-  { value: 'Low',    label: 'Low' },
-  { value: 'Medium', label: 'Medium' },
-  { value: 'High',   label: 'High' },
+  { value: 'low',        label: 'Low' },
+  { value: 'medium',     label: 'Medium' },
+  { value: 'high',       label: 'High' },
 ];
 
 const STATUS_OPTIONS = [
-  { value: 'Pending',     label: 'Pending' },
-  { value: 'In Progress', label: 'In Progress' },
-  { value: 'Completed',   label: 'Completed' },
+  { value: 'pending',     label: 'Pending' },
+  { value: 'in-progress', label: 'In Progress' },
+  { value: 'completed',   label: 'Completed' },
 ];
 
 interface FormState {
   title: string;
   description: string;
-  category: string;
+  categoryId: string;
   priority: Priority;
   status: Status;
   dueDate: string;
@@ -38,16 +38,16 @@ interface FormState {
 
 interface FormErrors {
   title?: string;
-  category?: string;
+  categoryId?: string;
   dueDate?: string;
 }
 
 const EMPTY_FORM: FormState = {
   title: '',
   description: '',
-  category: '',
-  priority: 'Medium',
-  status: 'Pending',
+  categoryId: '',
+  priority: 'medium',
+  status: 'pending',
   dueDate: '',
   assignedTo: '',
 };
@@ -79,7 +79,7 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
       setForm({
         title:       task.title,
         description: task.description ?? '',
-        category:    task.category,
+        categoryId:  task.categoryId,
         priority:    task.priority,
         status:      task.status,
         dueDate:     task.dueDate ? task.dueDate.slice(0, 10) : '',
@@ -91,8 +91,8 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
     setErrors({});
   }, [task, open]);
 
-  // category options use MongoDB _id as value
-  const categoryOptions = categories.map((c) => ({ value: c.id, label: c.name }));
+  // category options — use MongoDB _id as value, fallback to _id if id not set
+  const categoryOptions = categories.map((c) => ({ value: c.id || (c as any)._id, label: c.name }));
 
   const set = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -103,9 +103,9 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!form.title.trim())    newErrors.title    = 'Task title is required';
-    if (!form.category)        newErrors.category = 'Please select a category';
-    if (!form.dueDate)         newErrors.dueDate  = 'Please select a due date';
+    if (!form.title.trim())    newErrors.title      = 'Task title is required';
+    if (!form.categoryId)      newErrors.categoryId = 'Please select a category';
+    if (!form.dueDate)         newErrors.dueDate    = 'Please select a due date';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -121,7 +121,7 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
       const payload: CreateTaskPayload = {
         title:       form.title.trim(),
         description: form.description.trim() || undefined,
-        category:    form.category,          // MongoDB ObjectId from categoryService
+        categoryId:  form.categoryId,       // MongoDB ObjectId from categoryService
         priority:    form.priority as Priority,
         status:      form.status as Status,
         dueDate:     form.dueDate,
@@ -183,9 +183,9 @@ export function TaskModal({ open, onClose, onSave, task }: TaskModalProps) {
             required
             placeholder="Select category"
             options={categoryOptions}
-            value={form.category}
-            onChange={set('category')}
-            error={errors.category}
+            value={form.categoryId}
+            onChange={set('categoryId')}
+            error={errors.categoryId}
           />
           <Select
             label="Priority"

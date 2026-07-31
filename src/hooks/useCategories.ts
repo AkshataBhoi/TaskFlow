@@ -54,5 +54,5 @@ export function useCategories() {
     }
   };
 
-  return { categories, loading, error, refresh: fetchCategories, createCategory, updateCategory, deleteCategory };
+  return { categories, loading, error, refreshCategories: fetchCategories, createCategory, updateCategory, deleteCategory };
 }

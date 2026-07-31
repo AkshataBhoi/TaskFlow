@@ -4,7 +4,7 @@ import type { HistoryEvent, ApiResponse } from '../types/task';
 export const historyService = {
   async getAll(): Promise<ApiResponse<HistoryEvent[]>> {
     const res = await api.get('/activities');
-    
+
     // Map backend Activity model to frontend HistoryEvent interface
     const data = res.data.data.map((a: any) => ({
       id: a._id,

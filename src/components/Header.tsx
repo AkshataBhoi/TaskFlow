@@ -2,10 +2,17 @@ import { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Plus, RefreshCw, ChevronDown, Menu, LogOut, Settings, User } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SearchInput } from './ui/SearchInput';
+// import { SearchInput } from './ui/SearchInput';
 import { Button } from './ui/Button';
 import { useClickOutside } from '../hooks/useClickOutside';
-import { CURRENT_USER } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
+
+interface HeaderProps {
+  onMobileMenuOpen: () => void;
+  onNewTask?: () => void;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
+}
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard':  { title: 'Dashboard',        subtitle: 'Overview of your workspace' },
@@ -15,24 +22,21 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/settings':   { title: 'Settings',          subtitle: 'Manage your account' },
 };
 
-interface HeaderProps {
-  onMobileMenuOpen: () => void;
-  onNewTask?: () => void;
-  onRefresh?: () => void;
-  isRefreshing?: boolean;
-}
 
-export default function Header({ onMobileMenuOpen, onNewTask, onRefresh, isRefreshing }: HeaderProps) {
+export default function Header({ onMobileMenuOpen }: HeaderProps) {
   const location  = useLocation();
   const navigate  = useNavigate();
-  const [search, setSearch]           = useState('');
+  const { user, logout } = useAuth();
+  // const [search, setSearch]           = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
   useClickOutside(profileRef, () => setProfileOpen(false));
 
   const pageInfo = PAGE_TITLES[location.pathname] ?? { title: 'TaskFlow', subtitle: '' };
-  const initials = CURRENT_USER.name.split(' ').map((n) => n[0]).join('');
+  // Support both fullName (backend) and name (legacy mock)
+  const displayName = user?.fullName || user?.name || 'User';
+  const initials = displayName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
     <header className="h-[68px] bg-white border-b border-slate-200 flex items-center px-6 gap-4 sticky top-0 z-30 shrink-0">
@@ -54,41 +58,41 @@ export default function Header({ onMobileMenuOpen, onNewTask, onRefresh, isRefre
       <div className="flex-1" />
 
       {/* Search */}
-      <SearchInput
+      {/* <SearchInput
         placeholder="Search tasks..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onClear={() => setSearch('')}
         className="w-56 lg:w-72"
-      />
+      /> */}
 
       {/* Refresh */}
-      <button
+      {/* <button
         onClick={onRefresh}
         className="p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all duration-200"
         title="Refresh"
       >
         <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
-      </button>
+      </button> */}
 
       {/* Bell */}
-      <button
+      {/* <button
         className="relative p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all duration-200"
         title="Notifications"
       >
         <Bell size={16} />
         <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-      </button>
+      </button> */}
 
       {/* New Task */}
-      <Button
+      {/* <Button
         onClick={onNewTask}
         icon={<Plus size={16} />}
         size="md"
         className="hidden sm:inline-flex"
       >
         New Task
-      </Button>
+      </Button> */}
 
       {/* Profile dropdown */}
       <div className="relative" ref={profileRef}>
@@ -115,8 +119,8 @@ export default function Header({ onMobileMenuOpen, onNewTask, onRefresh, isRefre
               className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden z-50"
             >
               <div className="p-3 border-b border-slate-100">
-                <p className="font-semibold text-slate-900 text-sm">{CURRENT_USER.name}</p>
-                <p className="text-xs text-slate-500">{CURRENT_USER.email}</p>
+                <p className="font-semibold text-slate-900 text-sm">{displayName}</p>
+                <p className="text-xs text-slate-500">{user?.email}</p>
               </div>
               <div className="p-1.5">
                 <DropdownItem icon={<User size={15} />} onClick={() => { navigate('/settings'); setProfileOpen(false); }}>
@@ -126,7 +130,7 @@ export default function Header({ onMobileMenuOpen, onNewTask, onRefresh, isRefre
                   Settings
                 </DropdownItem>
                 <div className="my-1 border-t border-slate-100" />
-                <DropdownItem icon={<LogOut size={15} />} onClick={() => navigate('/login')} danger>
+                <DropdownItem icon={<LogOut size={15} />} onClick={logout} danger>
                   Sign out
                 </DropdownItem>
               </div>

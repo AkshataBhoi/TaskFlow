@@ -62,7 +62,7 @@ class TaskService {
 
   async deleteTask(userId, taskId) {
     const task = await Task.findOneAndDelete({ _id: taskId, userId });
-    
+
     if (!task) {
       throw new Error('Task not found');
     }

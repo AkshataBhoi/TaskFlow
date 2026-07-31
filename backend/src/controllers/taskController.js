@@ -33,8 +33,8 @@ export const createTask = async (req, res, next) => {
   try {
     const task = await taskService.createTask(req.user._id, req.body);
     console.log("===== CREATE TASK =====");
-  console.log("BODY:", req.body);
-  console.log("USER:", req.user);
+    console.log("BODY:", req.body);
+    console.log("USER:", req.user);
     res.status(201).json({
       success: true,
       message: 'Task created successfully',

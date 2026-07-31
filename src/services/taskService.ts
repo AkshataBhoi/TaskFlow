@@ -19,6 +19,7 @@ export const taskService = {
     pageSize = 10
   ): Promise<PaginatedResponse<Task>> {
     const params = new URLSearchParams();
+    console.log(params.toString());
     if (filters.search) params.append('search', filters.search);
     if (filters.status) params.append('status', filters.status);
     if (filters.category) params.append('category', filters.category);
@@ -36,10 +37,11 @@ export const taskService = {
     // Let's assume the backend /api/tasks endpoint doesn't support pagination out of the box (as we just wrote it without).
     // The backend `taskController.getTasks` just returns { success: true, data: tasks }.
     // So we'll map it to the frontend's expected PaginatedResponse structure manually if needed, or just return it.
-    
+
     // To minimize frontend changes, let's process the flat array returned from backend:
     let filtered: Task[] = res.data.data || [];
-    
+    console.log(filtered[0]);
+
     // Fallback frontend filtering if the backend doesn't implement it yet
     if (filters.search) {
       const q = filters.search.toLowerCase();
@@ -105,7 +107,7 @@ export const taskService = {
     // Frontend payload uses 'category', backend expects 'categoryId'
     const backendPayload = {
       ...payload,
-      categoryId: payload.category,
+      categoryId: payload.categoryId,
     };
     console.log('taskService.create: sending payload', backendPayload);
     const res = await api.post('/tasks', backendPayload);
@@ -124,9 +126,9 @@ export const taskService = {
    */
   async update(id: string, payload: UpdateTaskPayload): Promise<ApiResponse<Task>> {
     const backendPayload = { ...payload };
-    if (backendPayload.category) {
-      (backendPayload as any).categoryId = backendPayload.category;
-      delete backendPayload.category;
+    if (backendPayload.categoryId) {
+      (backendPayload as any).categoryId = backendPayload.categoryId;
+      delete backendPayload.categoryId;
     }
     const res = await api.put(`/tasks/${id}`, backendPayload);
     const t = res.data.data;
