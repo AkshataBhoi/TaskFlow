@@ -21,6 +21,7 @@ type DashboardContext = {
 
 
 export default function Dashboard() {
+  const [filters, setFilters] = useState<TaskFilters>({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isRefresh, setIsRefreshing] = useState(false);
@@ -38,7 +39,7 @@ export default function Dashboard() {
   const { categories } = useCategories();
 
   // Fetch filtered tasks (for table preview — limit 6)
-  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, refreshTasks, deleteTask, filters, setFilters } = useTasks({ sortBy: 'createdAt', sortOrder: 'desc' }, 10);
+  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, refreshTasks, deleteTask } = useTasks(filters, 10);
   const {
     refreshCategories,
   } = useCategories();
@@ -78,7 +79,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-7">
-      <DashboardHeader stats={stats} />
+      <DashboardHeader />
 
       {/* Stats */}
       <StatsGrid stats={stats} loading={statsLoading} />

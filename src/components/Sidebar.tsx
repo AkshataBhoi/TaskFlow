@@ -16,7 +16,7 @@ import { cn } from '../utils/cn';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'My Tasks',  path: '/my-tasks',  icon: ListTodo        },
+  { name: 'My Tasks',  path: '/my-tasks',  icon: ListTodo,         badge: 8  },
   { name: 'Categories',path: '/categories',icon: Tags                         },
   { name: 'History',   path: '/history',   icon: History                      },
   { name: 'Settings',  path: '/settings',  icon: Settings                     },

@@ -45,59 +45,52 @@ export function FilterBar({ filters, onChange, categories = [] }: FilterBarProps
   };
 
   return (
-    <div className="sticky top-0 z-20 flex flex-col sm:flex-row flex-wrap items-center gap-3 bg-slate-50/80 backdrop-blur-md p-3 rounded-2xl border border-slate-200">
-      <div className="w-full sm:w-auto flex-grow max-w-sm">
-        <SearchInput
-          placeholder="Search tasks..."
-          value={filters.search ?? ''}
-          onChange={set('search')}
-          onClear={() => onChange({ ...filters, search: '' })}
-          className="w-full rounded-full bg-white shadow-sm"
-        />
-      </div>
+    <div className="flex flex-wrap items-center gap-3">
+      <SearchInput
+        placeholder="Search tasks..."
+        value={filters.search ?? ''}
+        onChange={set('search')}
+        onClear={() => onChange({ ...filters, search: '' })}
+        className="w-56 flex-shrink-0"
+      />
 
-      <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-        <Select
-          options={STATUS_OPTIONS}
-          value={filters.status ?? ''}
-          onChange={(e) => onChange({ ...filters, status: e.target.value as Status | '' })}
-          className="w-full sm:w-40 rounded-full bg-white shadow-sm"
-        />
+      <Select
+        options={STATUS_OPTIONS}
+        value={filters.status ?? ''}
+        onChange={(e) => onChange({ ...filters, status: e.target.value as Status | '' })}
+        className="w-40"
+      />
 
-        <Select
-          options={categoryOptions}
-          value={filters.category ?? ''}
-          onChange={set('category')}
-          className="w-full sm:w-44 rounded-full bg-white shadow-sm"
-        />
+      <Select
+        options={categoryOptions}
+        value={filters.category ?? ''}
+        onChange={set('category')}
+        className="w-44"
+      />
 
-        <Select
-          options={PRIORITY_OPTIONS}
-          value={filters.priority ?? ''}
-          onChange={(e) => onChange({ ...filters, priority: e.target.value as Priority | '' })}
-          className="w-full sm:w-40 rounded-full bg-white shadow-sm"
-        />
+      <Select
+        options={PRIORITY_OPTIONS}
+        value={filters.priority ?? ''}
+        onChange={(e) => onChange({ ...filters, priority: e.target.value as Priority | '' })}
+        className="w-40"
+      />
 
-        <Select
-          options={SORT_OPTIONS}
-          value={filters.sortBy ?? 'createdAt'}
-          onChange={(e) => onChange({ ...filters, sortBy: e.target.value as TaskFilters['sortBy'] })}
-          className="w-full sm:w-40 rounded-full bg-white shadow-sm"
-        />
-      </div>
+      <Select
+        options={SORT_OPTIONS}
+        value={filters.sortBy ?? 'createdAt'}
+        onChange={(e) => onChange({ ...filters, sortBy: e.target.value as TaskFilters['sortBy'] })}
+        className="w-40"
+      />
 
       {hasActiveFilters && (
-        <div className="w-full sm:w-auto flex justify-end">
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={<X size={14} />}
-            onClick={() => onChange({ sortBy: 'createdAt', sortOrder: 'desc' })}
-            className="rounded-full text-slate-500 hover:text-slate-800"
-          >
-            Clear Filters
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<X size={14} />}
+          onClick={() => onChange({ sortBy: 'createdAt', sortOrder: 'desc' })}
+        >
+          Clear
+        </Button>
       )}
     </div>
   );

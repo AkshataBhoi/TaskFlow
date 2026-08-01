@@ -15,17 +15,17 @@ interface HeaderProps {
 }
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
-  '/dashboard': { title: 'Dashboard', subtitle: 'Overview of your workspace' },
-  '/my-tasks': { title: 'My Tasks', subtitle: 'Manage and track your tasks' },
-  '/categories': { title: 'Categories', subtitle: 'Organize tasks into categories' },
-  '/history': { title: 'Activity History', subtitle: 'All changes and updates' },
-  '/settings': { title: 'Settings', subtitle: 'Manage your account' },
+  '/dashboard':  { title: 'Dashboard',        subtitle: 'Overview of your workspace' },
+  '/my-tasks':   { title: 'My Tasks',          subtitle: 'Manage and track your tasks' },
+  '/categories': { title: 'Categories',        subtitle: 'Organize tasks into categories' },
+  '/history':    { title: 'Activity History',  subtitle: 'All changes and updates' },
+  '/settings':   { title: 'Settings',          subtitle: 'Manage your account' },
 };
 
 
 export default function Header({ onMobileMenuOpen }: HeaderProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location  = useLocation();
+  const navigate  = useNavigate();
   const { user, logout } = useAuth();
   // const [search, setSearch]           = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
@@ -100,21 +100,8 @@ export default function Header({ onMobileMenuOpen }: HeaderProps) {
           onClick={() => setProfileOpen((v) => !v)}
           className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition-colors"
         >
-          <div className="flex items-center gap-3">
-            {/* Avatar */}
-            <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
-              {initials}
-            </div>
-
-            {/* User Info */}
-            <div className="min-w-0">
-              <p className="font-semibold text-slate-900 text-sm truncate">
-                {displayName}
-              </p>
-              <p className="text-xs text-slate-500 truncate">
-                {user?.email}
-              </p>
-            </div>
+          <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
+            {initials}
           </div>
           <ChevronDown
             size={14}
@@ -131,10 +118,10 @@ export default function Header({ onMobileMenuOpen }: HeaderProps) {
               transition={{ duration: 0.15 }}
               className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden z-50"
             >
-              {/* <div className="p-3 border-b border-slate-100">
+              <div className="p-3 border-b border-slate-100">
                 <p className="font-semibold text-slate-900 text-sm">{displayName}</p>
                 <p className="text-xs text-slate-500">{user?.email}</p>
-              </div> */}
+              </div>
               <div className="p-1.5">
                 <DropdownItem icon={<User size={15} />} onClick={() => { navigate('/settings'); setProfileOpen(false); }}>
                   Profile

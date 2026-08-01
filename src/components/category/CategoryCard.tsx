@@ -37,34 +37,30 @@ export function CategoryCard({ category, index = 0, onEdit, onDelete }: Category
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 group relative overflow-hidden"
+      className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200 group relative"
     >
-      {/* Decorative gradient blob */}
-      <div className={cn("absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-10 blur-3xl transition-opacity duration-300 group-hover:opacity-30", colors.bg)} />
-
       {/* Action buttons — hover reveal */}
-      <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-10">
+      <div className="absolute top-4 right-4 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
         <button
           onClick={() => onEdit(category)}
-          className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
         >
           <Pencil size={14} />
         </button>
         <button
           onClick={() => onDelete(category.id)}
-          className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors bg-white/80 backdrop-blur-sm border border-slate-100 shadow-sm"
+          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
         >
           <Trash2 size={14} />
         </button>
       </div>
 
       {/* Icon + Name */}
-      <div className="flex items-center gap-3 mb-5 relative z-10">
-        <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm', colors.iconBg)}>
+      <div className="flex items-center gap-3 mb-4">
+        <div className={cn('w-11 h-11 rounded-xl flex items-center justify-center shrink-0', colors.iconBg)}>
           <IconComp size={20} className={colors.iconColor} />
         </div>
         <div>

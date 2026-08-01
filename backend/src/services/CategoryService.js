@@ -1,37 +1,9 @@
-import mongoose from 'mongoose';
 import Category from '../models/Category.js';
 import ActivityService from './ActivityService.js';
 
 class CategoryService {
   async getCategories(userId) {
-    const categories = await Category.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
-      {
-        $lookup: {
-          from: 'tasks',
-          localField: '_id',
-          foreignField: 'categoryId',
-          as: 'tasks',
-        }
-      },
-      {
-        $addFields: {
-          taskCount: { $size: '$tasks' },
-          completedCount: {
-            $size: {
-              $filter: {
-                input: '$tasks',
-                as: 'task',
-                cond: { $eq: ['$$task.status', 'completed'] }
-              }
-            }
-          }
-        }
-      },
-      { $project: { tasks: 0 } }
-    ]);
-
-    return categories;
+    return await Category.find();
   }
 
   async getCategoryById(userId, categoryId) {
