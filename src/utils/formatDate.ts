@@ -31,6 +31,17 @@ export function formatRelativeTime(iso: string): string {
 }
 
 /**
+ * Format timestamp into compact clock time or short date
+ * @example formatCompactTime('2026-07-25T10:30:00Z') // "10:30 AM"
+ */
+export function formatCompactTime(iso: string): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+/**
  * Check if a date is overdue
  */
 export function isOverdue(isoDate: string): boolean {

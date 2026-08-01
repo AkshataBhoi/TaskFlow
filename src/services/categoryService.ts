@@ -10,12 +10,11 @@ export const categoryService = {
   async getAll(): Promise<ApiResponse<Category[]>> {
     const res = await api.get('/categories');
     
-    // Map backend `_id` to `id` for frontend consistency
     const data = res.data.data.map((c: any) => ({
       ...c,
       id: c._id,
-      taskCount: c.taskCount || 0, // In a real robust app, backend aggregates this. We'll default to 0 if not present.
-      completedCount: c.completedCount || 0
+      taskCount:      c.taskCount      ?? 0,
+      completedCount: c.completedCount ?? 0,
     }));
 
     return { data, message: res.data.message, success: true };

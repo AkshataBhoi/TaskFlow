@@ -98,14 +98,18 @@ export default function Header({ onMobileMenuOpen }: HeaderProps) {
       <div className="relative" ref={profileRef}>
         <button
           onClick={() => setProfileOpen((v) => !v)}
-          className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition-colors"
+          className="flex items-center gap-2.5 p-1.5 pr-3 rounded-2xl hover:bg-slate-100 transition-colors"
         >
-          <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
             {initials}
+          </div>
+          <div className="hidden md:block text-left">
+            <p className="text-sm font-semibold text-slate-800 leading-tight">{displayName}</p>
+            <p className="text-xs text-slate-400 leading-tight truncate max-w-[140px]">{user?.email}</p>
           </div>
           <ChevronDown
             size={14}
-            className={cn('text-slate-400 transition-transform duration-200 hidden sm:block', profileOpen && 'rotate-180')}
+            className={cn('text-slate-400 transition-transform duration-200', profileOpen && 'rotate-180')}
           />
         </button>
 
