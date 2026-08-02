@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Plus, RefreshCw, ChevronDown, Menu, LogOut, Settings, User } from 'lucide-react';
+import { ChevronDown, Menu, LogOut, Settings, User } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 // import { SearchInput } from './ui/SearchInput';
-import { Button } from './ui/Button';
+// import { Button } from './ui/Button';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { useAuth } from '../context/AuthContext';
 

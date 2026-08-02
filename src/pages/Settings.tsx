@@ -12,7 +12,7 @@ import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { Skeleton } from '../components/ui/LoadingSkeleton';
 import { useAuth } from '../context/AuthContext';
 import { CURRENT_USER } from '../data/mockData';
-import { COMPANIONS } from '../data/companions';
+// import { COMPANIONS } from '../data/companions';
 
 // ─── Theme Helper ─────────────────────────────────────────────────────────────
 
@@ -73,7 +73,7 @@ function HorizontalCard({
   );
 }
 
-function Toggle({
+export function Toggle({
   checked,
   onChange,
   label,
@@ -85,18 +85,25 @@ function Toggle({
   description?: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0 border-b last:border-0 border-slate-100 dark:border-slate-800">
+    <div className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0 border-b last:border-0 border-slate-100">
       <div>
-        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</p>
-        {description && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>}
+        <p className="text-sm font-medium text-slate-800">{label}</p>
+        {description && (
+          <p className="text-xs text-slate-500 mt-0.5">{description}</p>
+        )}
       </div>
+
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-hidden ${checked ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}
+        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${
+          checked ? "bg-blue-600" : "bg-slate-200"
+        }`}
       >
         <span
-          className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform duration-200 ${checked ? 'translate-x-[18px]' : 'translate-x-[3px]'}`}
+          className={`inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform duration-200 ${
+            checked ? "translate-x-[18px]" : "translate-x-[3px]"
+          }`}
         />
       </button>
     </div>
@@ -132,9 +139,9 @@ export default function Settings() {
   // Active form state
   const [name, setName] = useState(activeUserName);
   const [email, setEmail] = useState(activeUserEmail);
-  const [theme, setTheme] = useState<ThemeMode>(savedTheme);
-  const [selectedCompanionId, setSelectedCompanionId] = useState<string>(savedCompanionId);
-  const [companionTheme, setCompanionTheme] = useState<'light' | 'dark' | 'system'>(savedCompanionTheme);
+  const [theme, _setTheme] = useState<ThemeMode>(savedTheme);
+  const [selectedCompanionId, _setSelectedCompanionId] = useState<string>(savedCompanionId);
+  const [companionTheme, _setCompanionTheme] = useState<'light' | 'dark' | 'system'>(savedCompanionTheme);
 
   // Sync state if auth user loads later
   useEffect(() => {
@@ -593,15 +600,16 @@ export default function Settings() {
         </div>
       </HorizontalCard> */}
 
-      {/* Row 3 Grid: Horizontal Blocks for Notifications & Password */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Notifications */}
-        {/* <HorizontalCard
+      {/* Row 3 Grid: Notifications */}
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Notifications }
+        <HorizontalCard
           icon={Bell}
+          className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 shadow-sm"
           title="Notification Preferences"
           description="Choose which event alerts you receive."
         >
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-slate-100">
             <Toggle
               checked={notifs.taskCreated}
               onChange={(v) => setNotifs((n) => ({ ...n, taskCreated: v }))}
@@ -627,8 +635,8 @@ export default function Settings() {
               description="Summary sent every Monday"
             />
           </div>
-        </HorizontalCard> */}
-      </div>
+        </HorizontalCard>
+      </div> */}
 
       {/* Row 4: Full-Width Horizontal Block for Danger Zone */}
       <div className="bg-gradient-to-br from-red-50 via-white to-rose-50 border border-red-200 rounded-2xl p-5 sm:p-6 shadow-sm transition-all duration-200 hover:shadow-sm">

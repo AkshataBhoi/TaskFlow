@@ -10,16 +10,17 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  type LucideIcon,
 } from 'lucide-react';
 import { cn } from '../utils/cn';
 // import { CURRENT_USER } from '../data/mockData';
 
-const navItems = [
+const navItems: { name: string; path: string; icon: LucideIcon; badge?: number }[] = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'My Tasks',  path: '/my-tasks',  icon: ListTodo        },
-  { name: 'Categories',path: '/categories',icon: Tags                         },
-  { name: 'History',   path: '/history',   icon: History                      },
-  { name: 'Settings',  path: '/settings',  icon: Settings                     },
+  { name: 'Categories',path: '/categories',icon: Tags            },
+  { name: 'History',   path: '/history',   icon: History         },
+  { name: 'Settings',  path: '/settings',  icon: Settings        },
 ];
 
 interface SidebarProps {

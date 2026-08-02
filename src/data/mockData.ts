@@ -4,7 +4,7 @@ import type { Task, Category, HistoryEvent, User } from '../types/task';
 
 export const CURRENT_USER: User = {
   id: 'u1',
-  name: 'Akshata Bhoi',
+  fullName: 'Akshata Bhoi',
   email: 'akshata@taskflow.app',
   role: 'Admin',
   createdAt: '2026-01-15T08:00:00Z',

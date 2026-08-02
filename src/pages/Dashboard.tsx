@@ -4,7 +4,7 @@ import { ArrowRight, Plus, RefreshCw } from 'lucide-react';
 import { DashboardHeader } from '../components/dashboard/DashboardHeader';
 import { StatsGrid } from '../components/dashboard/StatsGrid';
 import { FilterBar } from '../components/dashboard/FilterBar';
-import { TaskTable } from '../components/task/TaskTable';
+// import { TaskTable } from '../components/task/TaskTable';
 import { TaskModal } from '../components/task/TaskModal';
 import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
@@ -25,11 +25,9 @@ export default function Dashboard() {
   const [filters, setFilters] = useState<TaskFilters>({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [isRefresh, setIsRefreshing] = useState(false);
-
+  const [, setIsRefreshing] = useState(false);
 
   const {
-    onRefresh,
     isRefreshing,
   } = useOutletContext<DashboardContext>();
 
