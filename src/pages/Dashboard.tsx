@@ -4,7 +4,7 @@ import { ArrowRight, Plus, RefreshCw } from 'lucide-react';
 import { DashboardHeader } from '../components/dashboard/DashboardHeader';
 import { StatsGrid } from '../components/dashboard/StatsGrid';
 import { FilterBar } from '../components/dashboard/FilterBar';
-// import { TaskTable } from '../components/task/TaskTable';
+import { TaskTable } from '../components/task/TaskTable';
 import { TaskModal } from '../components/task/TaskModal';
 import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
@@ -22,7 +22,6 @@ type DashboardContext = {
 
 
 export default function Dashboard() {
-  const [filters, setFilters] = useState<TaskFilters>({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [, setIsRefreshing] = useState(false);
@@ -38,7 +37,7 @@ export default function Dashboard() {
   const { categories } = useCategories();
 
   // Fetch filtered tasks (for table preview — limit 6)
-  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, refreshTasks, deleteTask } = useTasks(filters, 10);
+  const { tasks: filteredTasks, loading: tableLoading, createTask, updateTask, refreshTasks, deleteTask, filters, setFilters } = useTasks({ sortBy: 'createdAt', sortOrder: 'desc' }, 10);
   const {
     refreshCategories,
   } = useCategories();
@@ -130,14 +129,28 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <TaskMobileList
-          tasks={filteredTasks}
-          loading={tableLoading}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onAddTask={() => setTaskModalOpen(true)}
-          limit={6}
-        />
+        {/* Desktop Table */}
+        <div className="hidden md:block">
+          <TaskTable
+            tasks={filteredTasks}
+            loading={tableLoading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAddTask={() => setTaskModalOpen(true)}
+          />
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="block md:hidden">
+          <TaskMobileList
+            tasks={filteredTasks}
+            loading={tableLoading}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAddTask={() => setTaskModalOpen(true)}
+            limit={6}
+          />
+        </div>
       </div>
 
       <TaskModal

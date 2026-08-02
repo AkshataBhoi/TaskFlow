@@ -17,8 +17,8 @@ class DashboardService {
   }
 
   async getRecentActivity(userId) {
-    const activities = await ActivityService.getUserActivities(userId);
-    return activities.slice(0, 5); // return top 5 recent activities
+    const result = await ActivityService.getUserActivities(userId, { limit: 5 });
+    return result.data;
   }
 
   async getDashboardData(userId) {

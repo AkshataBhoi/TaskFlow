@@ -11,21 +11,19 @@ import { useCategories } from '../hooks/useCategories';
 import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
 
 export default function Tasks() {
-  const [filters, setFilters]           = useState<TaskFilters>({ sortBy: 'createdAt', sortOrder: 'desc' });
   const [taskModalOpen, setTaskModalOpen] = useState(false);
-  const [editingTask, setEditingTask]   = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const {
     tasks, total, totalPages, page, setPage,
     loading, createTask, updateTask, deleteTask, bulkDeleteTasks,
-    setFilters: applyFilters,
-  } = useTasks(filters, 8);
+    filters, setFilters,
+  } = useTasks({ sortBy: 'createdAt', sortOrder: 'desc' }, 8);
 
   const { categories } = useCategories();
 
   const handleFilterChange = (f: TaskFilters) => {
     setFilters(f);
-    applyFilters(f);
   };
 
   const handleSave = async (payload: CreateTaskPayload) => {
@@ -45,7 +43,7 @@ export default function Tasks() {
   const handleSort = (col: string) => {
     setFilters((f) => ({
       ...f,
-      sortBy:    col as TaskFilters['sortBy'],
+      sortBy: col as TaskFilters['sortBy'],
       sortOrder: f.sortBy === col && f.sortOrder === 'asc' ? 'desc' : 'asc',
     }));
   };
@@ -53,13 +51,25 @@ export default function Tasks() {
   return (
     <div className="space-y-6 relative">
       {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">My Tasks</h1>
           <p className="text-slate-500 text-sm mt-1">
             {total} task{total !== 1 ? 's' : ''} in your workspace
           </p>
         </div>
+      </div> */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-br from-white via-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-5 shadow-sm">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            My Tasks
+          </h1>
+
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5">
+            Organize, track, and manage your daily tasks efficiently.
+          </p>
+        </div>
+
       </div>
 
       {/* Filter bar */}

@@ -3,9 +3,9 @@ import type { HistoryEvent, ApiResponse } from '../types/task';
 import { MOCK_HISTORY } from '../data/mockData';
 
 export const historyService = {
-  async getAll(): Promise<ApiResponse<HistoryEvent[]>> {
+  async getAll(params?: { page?: number; limit?: number; search?: string; date?: string; type?: string }): Promise<ApiResponse<HistoryEvent[]> & { total?: number; page?: number; totalPages?: number }> {
     try {
-      const res = await api.get('/activities');
+      const res = await api.get('/activities', { params });
 
       // Map backend Activity model to frontend HistoryEvent interface
       const data = res.data.data.map((a: any) => ({
@@ -25,7 +25,14 @@ export const historyService = {
         timestamp: a.createdAt || new Date().toISOString(),
       }));
 
-      return { data, message: res.data.message, success: true };
+      return { 
+        data, 
+        message: res.data.message, 
+        success: true,
+        total: res.data.total,
+        page: res.data.page,
+        totalPages: res.data.totalPages
+      };
     } catch (err) {
       // Fallback to MOCK_HISTORY if backend API is not reachable
       return { data: MOCK_HISTORY, message: 'Loaded from mock data', success: true };

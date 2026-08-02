@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { History as HistoryIcon, Filter, Clock } from 'lucide-react';
 import { TimelineEvent } from '../components/history/TimelineEvent';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Skeleton } from '../components/ui/LoadingSkeleton';
 import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
 import { useHistory } from '../hooks/useHistory';
 import type { HistoryEventType } from '../types/task';
 
@@ -63,11 +63,21 @@ function groupByDate(events: ReturnType<typeof useHistory>['events']) {
 }
 
 export default function History() {
-  const { events, loading } = useHistory();
-  const [typeFilter, setTypeFilter] = useState<HistoryEventType | ''>('');
+  const { events, loading, loadingMore, hasMore, loadMore, params, setParams } = useHistory();
 
-  const filtered = typeFilter ? events.filter((e) => e.type === typeFilter) : events;
-  const grouped  = groupByDate(filtered);
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setParams(p => ({ ...p, search: e.target.value }));
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setParams(p => ({ ...p, date: e.target.value }));
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setParams(p => ({ ...p, type: e.target.value as HistoryEventType | '' }));
+  };
+
+  const grouped = groupByDate(events);
 
   return (
     <motion.div 
@@ -83,7 +93,7 @@ export default function History() {
             <Clock className="w-5 h-5 text-blue-600" />
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">Activity History</h1>
             <span className="text-xs font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
-              {filtered.length} {filtered.length === 1 ? 'event' : 'events'}
+              {events.length} {events.length === 1 ? 'event' : 'events'}
             </span>
           </div>
           <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
@@ -91,13 +101,30 @@ export default function History() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <Filter size={15} className="text-slate-400 shrink-0" />
+        <div className="flex flex-wrap items-center gap-2 shrink-0 mt-3 sm:mt-0">
+          <input
+            type="text"
+            placeholder="Search activity..."
+            value={params.search || ''}
+            onChange={handleSearch}
+            className="w-40 px-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+          />
+          <Select
+            options={[
+              { value: '', label: 'All Dates' },
+              { value: 'today', label: 'Today' },
+              { value: 'yesterday', label: 'Yesterday' },
+            ]}
+            value={params.date || ''}
+            onChange={handleDateChange}
+            className="w-32 text-xs"
+          />
+          <Filter size={15} className="text-slate-400 shrink-0 hidden sm:block" />
           <Select
             options={TYPE_OPTIONS}
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as HistoryEventType | '')}
-            className="w-40 text-xs"
+            value={params.type || ''}
+            onChange={handleTypeChange}
+            className="w-36 text-xs"
           />
         </div>
       </div>
@@ -117,7 +144,7 @@ export default function History() {
               </div>
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : events.length === 0 ? (
           <EmptyState
             icon={<HistoryIcon size={26} />}
             title="No activity found"
@@ -139,7 +166,7 @@ export default function History() {
                 </div>
 
                 {/* Event Items List */}
-                <div className="divide-y divide-slate-100/70">
+                <div className="divide-y divide-slate-100/70 max-h-[32rem] overflow-y-auto pr-2">
                   {groupEvents.map((event, i) => (
                     <TimelineEvent
                       key={event.id}
@@ -151,6 +178,17 @@ export default function History() {
                 </div>
               </div>
             ))}
+            
+            {hasMore && (
+              <div className="pt-4 flex justify-center border-t border-slate-100">
+                <Button 
+                  variant="secondary" 
+                  onClick={loadMore} 
+                >
+                  {loadingMore ? 'Loading...' : 'Load More'}
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

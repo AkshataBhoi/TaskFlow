@@ -325,7 +325,7 @@ export default function Settings() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Settings</h1>
           <p className="text-slate-600 text-xs sm:text-sm mt-0.5">
-            Manage profile preferences, theme modes, and companion settings
+           Update your profile and preferences.   
           </p>
         </div>
 
