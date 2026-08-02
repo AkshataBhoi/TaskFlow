@@ -10,7 +10,7 @@ import { Button } from '../components/ui/Button';
 import { useTasks } from '../hooks/useTasks';
 import { useDashboard } from '../hooks/useDashboard';
 import { useCategories } from '../hooks/useCategories';
-import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
+import type { Task, CreateTaskPayload } from '../types/task';
 import { useOutletContext } from "react-router-dom";
 import { TaskMobileList } from '../components/task/TaskMobileList';
 
