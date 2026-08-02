@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Lock, Moon, Sun, Laptop, Bell, AlertTriangle, LogOut, Save, Eye, EyeOff,
-  Sparkles, Check, ShieldAlert, Key, RefreshCw
+  User, Lock, AlertTriangle, LogOut, Save, Eye, EyeOff,
+   Check, ShieldAlert, Key, RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '../components/ui/Button';
@@ -52,16 +52,16 @@ function HorizontalCard({
   className?: string;
 }) {
   return (
-    <div className={`bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xs transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between ${className}`}>
+    <div className={`bg-white dark:bg-slate-900 border border-slate-200rounded-2xl p-5 sm:p-6 shadow-2xs transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 flex flex-col justify-between ${className}`}>
       {/* Horizontal Top Header */}
       <div className="flex items-start justify-between gap-3 pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 shrink-0">
+          <div className="p-2 bg-slate-50 dark:bg-slate-700 rounded-xl border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 shrink-0">
             <Icon size={18} />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">{title}</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>
+            <h2 className="text-sm sm:text-base font-bold text-slate-900">{title}</h2>
+            <p className="text-xs text-slate-500 mt-0.5">{description}</p>
           </div>
         </div>
         {headerAction}
@@ -162,14 +162,14 @@ export default function Settings() {
   const [isSavingPw, setIsSavingPw] = useState(false);
   const [pwSavedSuccess, setPwSavedSuccess] = useState(false);
 
-  // Notifications
-  const [notifs, setNotifs] = useState({
-    taskCreated: true,
-    taskDue: true,
-    taskCompleted: false,
-    weeklyDigest: true,
-    marketing: false,
-  });
+  // // Notifications
+  // const [notifs, setNotifs] = useState({
+  //   taskCreated: true,
+  //   taskDue: true,
+  //   taskCompleted: false,
+  //   weeklyDigest: true,
+  //   marketing: false,
+  // });
 
   // Danger zone dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -180,26 +180,26 @@ export default function Settings() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Instant Theme application
-  const handleThemeSelect = (newTheme: ThemeMode) => {
-    setTheme(newTheme);
-    applyGlobalTheme(newTheme);
-    localStorage.setItem('taskflow_theme', newTheme);
-    window.dispatchEvent(new Event('theme-change'));
-  };
+  // // Instant Theme application
+  // const handleThemeSelect = (newTheme: ThemeMode) => {
+  //   setTheme(newTheme);
+  //   applyGlobalTheme(newTheme);
+  //   localStorage.setItem('taskflow_theme', newTheme);
+  //   window.dispatchEvent(new Event('theme-change'));
+  // };
 
-  // Instant Companion Selection update
-  const handleCompanionSelect = (id: string) => {
-    setSelectedCompanionId(id);
-    localStorage.setItem('taskflow_companion', id);
-    window.dispatchEvent(new Event('companion-change'));
-  };
+  // // Instant Companion Selection update
+  // const handleCompanionSelect = (id: string) => {
+  //   setSelectedCompanionId(id);
+  //   localStorage.setItem('taskflow_companion', id);
+  //   window.dispatchEvent(new Event('companion-change'));
+  // };
 
-  // Instant Companion Theme update
-  const handleCompanionThemeSelect = (cTheme: 'light' | 'dark' | 'system') => {
-    setCompanionTheme(cTheme);
-    localStorage.setItem('taskflow_companion_theme', cTheme);
-  };
+  // // Instant Companion Theme update
+  // const handleCompanionThemeSelect = (cTheme: 'light' | 'dark' | 'system') => {
+  //   setCompanionTheme(cTheme);
+  //   localStorage.setItem('taskflow_companion_theme', cTheme);
+  // };
 
   // Sync theme changes with global DOM
   useEffect(() => {
@@ -285,7 +285,7 @@ export default function Settings() {
     navigate('/login');
   };
 
-  const activeCompanion = COMPANIONS.find((c) => c.id === selectedCompanionId) || COMPANIONS[0];
+  // const activeCompanion = COMPANIONS.find((c) => c.id === selectedCompanionId) || COMPANIONS[0];
 
   if (loading) {
     return (
@@ -311,16 +311,21 @@ export default function Settings() {
       className="space-y-6 max-w-6xl mx-auto pb-16"
     >
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+      <div 
+      // className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-br from-white via-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-5 shadow-sm">
+      
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Settings</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Settings</h1>
+          <p className="text-slate-600 text-xs sm:text-sm mt-0.5">
             Manage profile preferences, theme modes, and companion settings
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <span 
+          // className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-medium text-slate-600 bg-white border border-slate-200 shadow-sm">
             <Key size={12} className="text-slate-400" />
             <span>Ctrl + S</span>
           </span>
@@ -338,16 +343,18 @@ export default function Settings() {
       </div>
 
       {/* Row 1 Grid: Horizontal Blocks for Profile Information & Appearance */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
         {/* Profile Information */}
         <HorizontalCard
           icon={User}
+          className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 shadow-sm"
           title="Profile Information"
           description="Update your display details and email address."
         >
           <div className="space-y-4">
             <Input
               label="Full Name"
+              // className=''
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -435,27 +442,30 @@ export default function Settings() {
             </div>
           </div>
         </HorizontalCard> */}
-         {/* Change Password */}
+        {/* Change Password */}
         <HorizontalCard
           icon={Lock}
+          className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 shadow-sm"
           title="Change Password"
           description="Ensure your account uses a secure password."
         >
           <div className="space-y-3">
             <Input
               label="Current Password"
-              type={showPw ? 'text' : 'password'}
+              type={showPw ? "text" : "password"}
               value={currentPw}
               onChange={(e) => setCurrentPw(e.target.value)}
               placeholder="••••••••"
               rightIcon={
-                <button
-                  type="button"
-                  onClick={() => setShowPw((v) => !v)}
-                  className="text-slate-400 hover:text-slate-600"
-                >
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
+                currentPw.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    className="text-slate-400 hover:text-slate-600"
+                  >
+                    {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                ) : null
               }
             />
             <Input
@@ -500,13 +510,13 @@ export default function Settings() {
       </div>
 
       {/* Row 2: Full-Width Horizontal Block for Productivity Companion */}
-      <HorizontalCard
+      {/* <HorizontalCard
         icon={Sparkles}
         title="Productivity Companion"
         description="Select your personal focus companion. The active companion will be reflected on your Dashboard header."
       >
         <div className="space-y-5">
-          {/* Active Companion Horizontal Preview Banner */}
+          {/* Active Companion Horizontal Preview Banner }
           <div className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-gradient-to-r from-slate-50 via-white to-blue-50/40 dark:from-slate-800/80 dark:via-slate-900 dark:to-blue-950/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl border shadow-2xs shrink-0 ${activeCompanion.avatarBg} ${activeCompanion.borderColor}`}>
@@ -526,7 +536,7 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Companion Theme Mode Pill */}
+            {/* Companion Theme Mode Pill }
             {/* <div className="flex items-center gap-1.5 self-end sm:self-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1.5 rounded-xl">
               <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 px-2 uppercase tracking-wider">Style:</span>
               {[
@@ -550,10 +560,10 @@ export default function Settings() {
                   </button>
                 );
               })}
-            </div> */}
+            </div> }
           </div>
 
-          {/* Horizontal Companion Selector Grid */}
+          {/* Horizontal Companion Selector Grid }
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Available Companions</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -581,7 +591,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-      </HorizontalCard>
+      </HorizontalCard> */}
 
       {/* Row 3 Grid: Horizontal Blocks for Notifications & Password */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -621,22 +631,24 @@ export default function Settings() {
       </div>
 
       {/* Row 4: Full-Width Horizontal Block for Danger Zone */}
-      <div className="bg-red-50/80 dark:bg-red-950/20 border border-red-200/80 dark:border-red-900/60 rounded-2xl p-5 sm:p-6 shadow-2xs transition-all duration-200 hover:shadow-sm">
+      <div className="bg-gradient-to-br from-red-50 via-white to-rose-50 border border-red-200 rounded-2xl p-5 sm:p-6 shadow-sm transition-all duration-200 hover:shadow-sm">
         <div className="flex items-center gap-3 mb-4 pb-3 border-b border-red-200/60 dark:border-red-900/40">
-          <div className="p-2 bg-white dark:bg-slate-900 rounded-xl border border-red-200 dark:border-red-800 shadow-2xs text-red-600">
+          <div className="p-2 bg-red-100 rounded-xl border border-red-200 shadow-2xs text-red-600">
             <ShieldAlert size={18} />
           </div>
           <div>
-            <h2 className="text-base font-bold text-red-950 dark:text-red-300">Danger Zone</h2>
-            <p className="text-xs text-red-700/90 dark:text-red-400">Irreversible account actions and session management.</p>
+            <h2 className="text-base font-bold text-red-700">Danger Zone</h2>
+            <p className="text-xs text-red-500">Irreversible account actions and session management.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-red-200/60 dark:border-red-900/40">
+          <div 
+          // className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-red-200/60 dark:border-red-900/40"
+          className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-red-100 hover:border-red-200 transition-all duration-200 shadow-sm hover:shadow-md">
             <div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Sign Out</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Securely end your current session</p>
+              <p className="text-sm font-semibold text-slate-900">Sign Out</p>
+              <p className="text-xs text-slate-500">Securely end your current session</p>
             </div>
             <Button
               variant="outline"
@@ -648,10 +660,12 @@ export default function Settings() {
             </Button>
           </div>
 
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-red-200/60 dark:border-red-900/40">
+          <div 
+          // className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-red-200/60 dark:border-red-900/40"
+          className="flex items-center justify-between p-3.5 rounded-xl bg-white border border-red-100 hover:border-red-200 transition-all duration-200 shadow-sm hover:shadow-md">
             <div>
-              <p className="text-sm font-semibold text-red-800 dark:text-red-400">Delete Account</p>
-              <p className="text-xs text-red-600/80 dark:text-red-400/80">Permanently erase account & data</p>
+              <p className="text-sm font-semibold text-red-700">Delete Account</p>
+              <p className="text-xs text-red-500">Permanently erase account & data</p>
             </div>
             <Button
               variant="danger"

@@ -16,71 +16,71 @@ const COLOR_MAP: Record<
   CategoryColor,
   { gradient: string; iconBg: string; iconColor: string; bar: string; badge: string; glow: string }
 > = {
-  blue:   {
+  blue: {
     gradient: 'from-blue-500/10 to-blue-600/5',
-    iconBg:   'bg-blue-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-blue-400 to-blue-600',
-    badge:    'bg-blue-50 text-blue-700 border-blue-200',
-    glow:     'shadow-blue-100',
+    iconBg: 'bg-blue-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-blue-400 to-blue-600',
+    badge: 'bg-blue-50 text-blue-700 border-blue-200',
+    glow: 'shadow-blue-100',
   },
   purple: {
     gradient: 'from-purple-500/10 to-purple-600/5',
-    iconBg:   'bg-purple-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-purple-400 to-purple-600',
-    badge:    'bg-purple-50 text-purple-700 border-purple-200',
-    glow:     'shadow-purple-100',
+    iconBg: 'bg-purple-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-purple-400 to-purple-600',
+    badge: 'bg-purple-50 text-purple-700 border-purple-200',
+    glow: 'shadow-purple-100',
   },
-  green:  {
+  green: {
     gradient: 'from-emerald-500/10 to-emerald-600/5',
-    iconBg:   'bg-emerald-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-emerald-400 to-emerald-600',
-    badge:    'bg-emerald-50 text-emerald-700 border-emerald-200',
-    glow:     'shadow-emerald-100',
+    iconBg: 'bg-emerald-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-emerald-400 to-emerald-600',
+    badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    glow: 'shadow-emerald-100',
   },
   orange: {
     gradient: 'from-orange-500/10 to-orange-600/5',
-    iconBg:   'bg-orange-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-orange-400 to-orange-600',
-    badge:    'bg-orange-50 text-orange-700 border-orange-200',
-    glow:     'shadow-orange-100',
+    iconBg: 'bg-orange-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-orange-400 to-orange-600',
+    badge: 'bg-orange-50 text-orange-700 border-orange-200',
+    glow: 'shadow-orange-100',
   },
-  red:    {
+  red: {
     gradient: 'from-red-500/10 to-red-600/5',
-    iconBg:   'bg-red-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-red-400 to-red-600',
-    badge:    'bg-red-50 text-red-700 border-red-200',
-    glow:     'shadow-red-100',
+    iconBg: 'bg-red-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-red-400 to-red-600',
+    badge: 'bg-red-50 text-red-700 border-red-200',
+    glow: 'shadow-red-100',
   },
-  teal:   {
+  teal: {
     gradient: 'from-teal-500/10 to-teal-600/5',
-    iconBg:   'bg-teal-500',
-    iconColor:'text-white',
-    bar:      'bg-gradient-to-r from-teal-400 to-teal-600',
-    badge:    'bg-teal-50 text-teal-700 border-teal-200',
-    glow:     'shadow-teal-100',
+    iconBg: 'bg-teal-500',
+    iconColor: 'text-white',
+    bar: 'bg-gradient-to-r from-teal-400 to-teal-600',
+    badge: 'bg-teal-50 text-teal-700 border-teal-200',
+    glow: 'shadow-teal-100',
   },
 };
 
 interface CategoryCardProps {
   category: Category;
   index?: number;
-  onEdit:   (category: Category) => void;
+  onEdit: (category: Category) => void;
   onDelete: (id: string) => void;
 }
 
 export function CategoryCard({ category, index = 0, onEdit, onDelete }: CategoryCardProps) {
-  const colors   = COLOR_MAP[category.color] ?? COLOR_MAP.blue;
+  const colors = COLOR_MAP[category.color] ?? COLOR_MAP.blue;
   const IconComp = ICONS[category.icon] ?? Folder;
 
-  const taskCount      = category.taskCount      ?? 0;
+  const taskCount = category.taskCount ?? 0;
   const completedCount = category.completedCount ?? 0;
-  const pendingCount   = Math.max(0, taskCount - completedCount);
-  const progress       = taskCount > 0 ? Math.round((completedCount / taskCount) * 100) : 0;
+  const pendingCount = Math.max(0, taskCount - completedCount);
+  const progress = taskCount > 0 ? Math.round((completedCount / taskCount) * 100) : 0;
 
   return (
     <motion.div
@@ -96,16 +96,25 @@ export function CategoryCard({ category, index = 0, onEdit, onDelete }: Category
       <div className={cn('absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none', colors.gradient)} />
 
       {/* Action buttons — hover reveal */}
-      <div className="absolute top-3.5 right-3.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10">
+      {/* <div className="absolute top-3.5 right-3.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"> */}
+      <div className="absolute top-3.5 right-3.5 flex gap-1 z-50">
         <button
-          onClick={() => onEdit(category)}
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log("Edit clicked");
+            onEdit(category);
+          }}
           className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors border border-slate-100 shadow-sm"
           title="Edit"
         >
           <Pencil size={13} />
         </button>
         <button
-          onClick={() => onDelete(category.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log("Delete clicked");
+            onDelete(category.id);
+          }}
           className="p-1.5 rounded-lg bg-white/90 backdrop-blur-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors border border-slate-100 shadow-sm"
           title="Delete"
         >

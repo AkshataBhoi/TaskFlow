@@ -12,6 +12,7 @@ import { useDashboard } from '../hooks/useDashboard';
 import { useCategories } from '../hooks/useCategories';
 import type { Task, CreateTaskPayload, TaskFilters } from '../types/task';
 import { useOutletContext } from "react-router-dom";
+import { TaskMobileList } from '../components/task/TaskMobileList';
 
 type DashboardContext = {
   openNewTaskModal: () => void;
@@ -85,27 +86,37 @@ export default function Dashboard() {
       <StatsGrid stats={stats} loading={statsLoading} />
 
       {/* Filter bar */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <FilterBar filters={filters} onChange={setFilters} categories={categories} />
-        <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <FilterBar
+          filters={filters}
+          onChange={setFilters}
+          categories={categories}
+        />
+
+        <div className="grid grid-cols-2 gap-3 w-[90%] lg:w-auto lg:flex lg:items-center">
           <button
             onClick={handleRefresh}
-            className="p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all duration-200"
+            className="flex items-center justify-center p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-all duration-200"
             title="Refresh"
           >
-            <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
+            <RefreshCw
+              size={16}
+              className={isRefreshing ? "animate-spin" : ""}
+            />
           </button>
+
           <Button
             icon={<Plus size={16} />}
-            onClick={() => { setEditingTask(null); setTaskModalOpen(true); }}
-            className="shrink-0"
+            onClick={() => {
+              setEditingTask(null);
+              setTaskModalOpen(true);
+            }}
+            className="w-full justify-center"
           >
             New Task
           </Button>
         </div>
-
       </div>
-
       {/* Recent tasks table */}
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -121,7 +132,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <TaskTable
+        <TaskMobileList
           tasks={filteredTasks}
           loading={tableLoading}
           onEdit={handleEdit}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { TaskTable } from '../components/task/TaskTable';
+import { TaskMobileList } from '../components/task/TaskMobileList';
 import { TaskModal } from '../components/task/TaskModal';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { Button } from '../components/ui/Button';
@@ -64,24 +65,44 @@ export default function Tasks() {
       {/* Filter bar */}
       <FilterBar filters={filters} onChange={handleFilterChange} categories={categories} />
 
-      {/* Task table */}
-      <TaskTable
-        tasks={tasks}
-        total={total}
-        totalPages={totalPages}
-        page={page}
-        pageSize={8}
-        loading={loading}
-        showPagination
-        onPageChange={setPage}
-        onEdit={handleEdit}
-        onDelete={deleteTask}
-        onBulkDelete={bulkDeleteTasks}
-        onAddTask={() => { setEditingTask(null); setTaskModalOpen(true); }}
-        sortBy={filters.sortBy}
-        sortOrder={filters.sortOrder}
-        onSort={handleSort}
-      />
+      {/* ── Desktop table (md and above) ────────────────────────── */}
+      <div className="hidden md:block">
+        <TaskTable
+          tasks={tasks}
+          total={total}
+          totalPages={totalPages}
+          page={page}
+          pageSize={8}
+          loading={loading}
+          showPagination
+          onPageChange={setPage}
+          onEdit={handleEdit}
+          onDelete={deleteTask}
+          onBulkDelete={bulkDeleteTasks}
+          onAddTask={() => { setEditingTask(null); setTaskModalOpen(true); }}
+          sortBy={filters.sortBy}
+          sortOrder={filters.sortOrder}
+          onSort={handleSort}
+        />
+      </div>
+
+      {/* ── Mobile card list (below md) ──────────────────────────── */}
+      <div className="md:hidden">
+        <TaskMobileList
+          tasks={tasks}
+          total={total}
+          totalPages={totalPages}
+          page={page}
+          pageSize={8}
+          loading={loading}
+          showPagination
+          onPageChange={setPage}
+          onEdit={handleEdit}
+          onDelete={deleteTask}
+          onBulkDelete={bulkDeleteTasks}
+          onAddTask={() => { setEditingTask(null); setTaskModalOpen(true); }}
+        />
+      </div>
 
       {/* Floating Add Task FAB */}
       <motion.div

@@ -1,4 +1,4 @@
-import { Search, X, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Search, X, ChevronDown } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -121,7 +121,8 @@ export function FilterBar({ filters, onChange, categories = [] }: FilterBarProps
           placeholder="Search tasks..."
           value={filters.search ?? ''}
           onChange={(e) => onChange({ ...filters, search: e.target.value })}
-          className="pl-8 pr-8 py-2 rounded-full border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all w-48"
+          // className="pl-8 pr-8 py-2 rounded-full border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all w-48"
+        className="w-full sm:w-64 lg:w-48 pl-8 pr-8 py-2 rounded-full border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
         />
         {filters.search && (
           <button

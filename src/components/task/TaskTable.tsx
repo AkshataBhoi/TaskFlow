@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUp, ArrowDown, ListTodo, Trash2, Plus } from 'lucide-react';
+import { ArrowUp, ArrowDown, ListTodo, Trash2, Plus, Pencil } from 'lucide-react';
 import type { Task } from '../../types/task';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
-import { TaskActionsMenu } from './TaskActionsMenu';
 import { Pagination } from '../ui/Pagination';
 import { EmptyState } from '../ui/EmptyState';
 import { TableRowSkeleton } from '../ui/LoadingSkeleton';
@@ -261,7 +260,7 @@ export function TaskTable({
                     <span
                       className={cn(
                         'text-sm',
-                        task.status !== 'Completed' && isOverdue(task.dueDate)
+                        task.status !== 'completed' && isOverdue(task.dueDate)
                           ? 'text-red-600 font-medium'
                           : 'text-slate-600'
                       )}
@@ -277,12 +276,25 @@ export function TaskTable({
 
                   {/* Actions */}
                   <td className="px-4 py-4">
-                    <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                      <TaskActionsMenu
-                        taskId={task.id}
-                        onEdit={onEdit ? () => onEdit(task) : undefined}
-                        onDelete={onDelete ? () => setDeleteId(task.id) : undefined}
-                      />
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {onEdit && (
+                        <button
+                          onClick={() => onEdit(task)}
+                          title="Edit task"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                      )}
+                      {onDelete && (
+                        <button
+                          onClick={() => setDeleteId(task.id)}
+                          title="Delete task"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </motion.tr>
