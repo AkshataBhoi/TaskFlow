@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '../types/task';
 import api from '../services/api';
+import { setToken, getToken, removeToken } from '../utils/token';
 
 interface AuthContextType {
   user: User | null;
@@ -18,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
       if (token) {
         try {
           const res = await api.get('/auth/profile');
@@ -27,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           console.error('Failed to authenticate:', error);
-          localStorage.removeItem('token');
+          removeToken();
         }
       }
       setIsLoading(false);
@@ -37,12 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (token: string, userData: User) => {
-    localStorage.setItem('token', token);
+    setToken(token);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    removeToken();
     setUser(null);
     window.location.href = '/login';
   };
